@@ -17,13 +17,14 @@
 
 class PipeReader {
 public:
-    PipeReader(int, const char*);
+    PipeReader(int, int, const char*);
     ~PipeReader();
 //    int readNumber();
 //    double readDoubleNumber();
 //    MyRecord* readRecords(long);
 private:
     int fd;
+    int bufferSize;
     const char* filename;
     static const int FIFO_MODE;
     static const int OPEN_MODE;

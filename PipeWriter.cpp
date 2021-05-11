@@ -6,9 +6,10 @@ const char* PipeWriter::MKFIFO_ERROR = "ERROR: mkfifo() failed to create a new n
 const char* PipeWriter::OPEN_PIPE_ERROR = "ERROR: open() failed to open a named pipe";
 const char* PipeWriter::WRITING_ERROR = "ERROR: write() failed to write to a named pipe";
 
-PipeWriter::PipeWriter(int fd, const char* filename) {
+PipeWriter::PipeWriter(int fd, int bufferSize, const char* filename) {
     this->fd = fd;
     this->filename = filename;
+    this->bufferSize = bufferSize;
 
     if(
         ( mkfifo(filename, FIFO_MODE) == -1 )

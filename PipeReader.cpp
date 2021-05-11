@@ -8,9 +8,10 @@ const char *PipeReader::READING_ERROR = "ERROR: read() failed to read from a nam
 char *PipeReader::MALLOC_FAIL_ERROR_MESSAGE = "ERROR: malloc() failed to "
                                               "allocate memory";
 
-PipeReader::PipeReader(int fd, const char *filename) {
+PipeReader::PipeReader(int fd, int bufferSize, const char *filename) {
     this->fd = fd;
     this->filename = filename;
+    this->bufferSize = bufferSize;
 
     if (
         (mkfifo(filename, FIFO_MODE) == -1)

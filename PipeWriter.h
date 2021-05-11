@@ -18,13 +18,14 @@
 
 class PipeWriter {
 public:
-    PipeWriter(int, const char*);
+    PipeWriter(int, int, const char*);
     ~PipeWriter();
 //    void writeNumber(int);
 //    void writeDoubleNumber(double);
 //    void writeRecords(MyRecord*, long);
 private:
     int fd;
+    int bufferSize;
     const char* filename;
     static const int FIFO_MODE;
     static const int OPEN_MODE;
