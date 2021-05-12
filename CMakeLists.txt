@@ -3,7 +3,15 @@ project(VaccinationCenterUsingProcessesAndNamedPipes)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(VaccinationCenterUsingProcessesAndNamedPipes main.cpp
+add_executable(
+        monitor
+        monitor.cpp
+        PipeReader.cpp PipeReader.h
+        PipeWriter.cpp PipeWriter.h
+        Helper.cpp Helper.h
+)
+
+add_executable(travelMonitor main.cpp
         BitArray.cpp BitArray.h
         BloomFilter.cpp BloomFilter.h
         Helper.cpp Helper.h
@@ -23,4 +31,7 @@ add_executable(VaccinationCenterUsingProcessesAndNamedPipes main.cpp
         Date.cpp Date.h
         VaccinationCenter.cpp VaccinationCenter.h
         Country.cpp Country.h CountryLinkedList.cpp CountryLinkedList.h CountryLinkedListNode.cpp CountryLinkedListNode.h
-        )
+        TravelMonitor.cpp TravelMonitor.h
+        PipeReader.cpp PipeReader.h
+        PipeWriter.cpp PipeWriter.h
+)
