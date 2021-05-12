@@ -29,35 +29,38 @@ PipeWriter::~PipeWriter() {
     close(fd);
 }
 
-//void PipeWriter::writeNumber(int number) {
-//    int bufferSize = sizeof(int);
-//
-//    if(
-//            ::write( this->fd, &number, bufferSize ) < 0
-//            ) {
-//        handlePipeError(WRITING_ERROR);
-//    }
-//
-//}
-//
-//void PipeWriter::writeDoubleNumber(double number) {
-//    int bufferSize = sizeof(double);
-//
-//    if(
-//            ::write( this->fd, &number, bufferSize ) < 0
-//            ) {
-//        handlePipeError(WRITING_ERROR);
-//    }
-//
-//}
-//
-//void PipeWriter::writeRecords(MyRecord* records, long bufferSize) {
-//    if(
-//            ::write( this->fd, records, bufferSize ) < 0
-//            ) {
-//        handlePipeError(WRITING_ERROR);
-//    }
-//}
+// I assume for simplicity that bufferSize >= sizeOf(int)
+void PipeWriter::writeNumber(int number) {
+    int bufferSize = sizeof(int);
+
+    if(
+        ::write( this->fd, &number, bufferSize ) < 0
+    ) {
+        handlePipeError(WRITING_ERROR);
+    }
+}
+
+void PipeWriter::writeStringInChunks(char* string) {
+    int totalBytes = sizeof(string);
+
+    int writtenBytes = 0;
+    int chunk;
+
+    while(writtenBytes < totalBytes) {
+        chunk = ::write(this->fd, string, this->bufferSize);
+        if (chunk < 0) {
+            handlePipeError(WRITING_ERROR);
+        }
+
+        // TODO: Maybe DANGERRRRRR
+        // We move the string pointer chunk chars ahead to continue the writing
+        // from the point is was stopped
+        string += chunk;
+
+        writtenBytes += chunk;
+        totalBytes -= chunk;
+    }
+}
 
 /* Function to handle errors of pipes. It is different from the one in Helper, as
  * it printf also what the error is */

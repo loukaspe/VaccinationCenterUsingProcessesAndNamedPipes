@@ -14,15 +14,15 @@ PipeReader::PipeReader(int fd, int bufferSize, const char *filename) {
     this->bufferSize = bufferSize;
 
     if (
-        (mkfifo(filename, FIFO_MODE) == -1)
-        && errno != EEXIST
-    ) {
+            (mkfifo(filename, FIFO_MODE) == -1)
+            && errno != EEXIST
+            ) {
         handlePipeError(MKFIFO_ERROR);
     }
 
     if (
-        (this->fd = open(this->filename, OPEN_MODE)) == -1
-    ) {
+            (this->fd = open(this->filename, OPEN_MODE)) == -1
+            ) {
         handlePipeError(OPEN_PIPE_ERROR);
     }
 }
@@ -31,63 +31,47 @@ PipeReader::~PipeReader() {
     close(fd);
 }
 
-/* PseudoCode for reading in chunks
-{
-    rawBytes = char[total h bufSize];
-    while(read < total ) {
-        memcpy(rawBytes, BF)
-        append
-        read += n;
-        total -= n;
+// I assume for simplicity that bufferSize >= sizeOf(int)
+int PipeReader::readNumber() {
+    int *number = (int *) malloc(sizeof(int));
+    if (number == NULL) {
+        Helper::handleError(MALLOC_FAIL_ERROR_MESSAGE);
     }
-}
-*/
 
-//int PipeReader::readNumber() {
-//    int *number = (int *) malloc(sizeof(int));
-//    if (number == NULL) {
-//        Helper::handleError(MALLOC_FAIL_ERROR_MESSAGE);
-//    }
-//
-//    int bufferSize = sizeof(int);
-//
-//    if (
-//            ::read(this->fd, number, bufferSize) < 0
-//            ) {
-//        handlePipeError(READING_ERROR);
-//    }
-//
-//    return *number;
-//}
-//
-//double PipeReader::readDoubleNumber() {
-//    double *number = (double *) malloc(sizeof(double));
-//    if (number == NULL) {
-//        Helper::handleError(MALLOC_FAIL_ERROR_MESSAGE);
-//    }
-//
-//    int bufferSize = sizeof(double);
-//
-//    if (
-//            ::read(this->fd, number, bufferSize) < 0
-//            ) {
-//        handlePipeError(READING_ERROR);
-//    }
-//
-//    return *number;
-//}
-//
-//MyRecord *PipeReader::readRecords(long bufferSize) {
-//    MyRecord *records = (MyRecord *) malloc(bufferSize);
-//
-//    if (
-//            ::read(this->fd, records, bufferSize) < 0
-//            ) {
-//        handlePipeError(READING_ERROR);
-//    }
-//
-//    return records;
-//}
+    int bufferSize = sizeof(int);
+
+    if (
+        ::read(this->fd, number, bufferSize) < 0
+    ) {
+        handlePipeError(READING_ERROR);
+    }
+
+    return *number;
+}
+
+char *PipeReader::readStringInChunks(int totalBytes) {
+    char* string = (char*) malloc(totalBytes * sizeof(char));
+    if (string == NULL) {
+        Helper::handleError(MALLOC_FAIL_ERROR_MESSAGE);
+    }
+
+    char rawBytes[this->bufferSize];
+    int readBytes = 0;
+    int chunk;
+
+    while(readBytes < totalBytes) {
+        chunk = ::read(this->fd, rawBytes, this->bufferSize);
+        if (chunk < 0) {
+            handlePipeError(READING_ERROR);
+        }
+
+        strncat(string, rawBytes, chunk);
+        readBytes += chunk;
+        totalBytes -= chunk;
+    }
+
+    return string;
+}
 
 void PipeReader::handlePipeError(const char *errorMessage) {
     perror(errorMessage);

@@ -20,9 +20,8 @@ class PipeWriter {
 public:
     PipeWriter(int, int, const char*);
     ~PipeWriter();
-//    void writeNumber(int);
-//    void writeDoubleNumber(double);
-//    void writeRecords(MyRecord*, long);
+    void writeNumber(int);
+    void writeStringInChunks(char*);
 private:
     int fd;
     int bufferSize;

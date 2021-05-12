@@ -19,9 +19,8 @@ class PipeReader {
 public:
     PipeReader(int, int, const char*);
     ~PipeReader();
-//    int readNumber();
-//    double readDoubleNumber();
-//    MyRecord* readRecords(long);
+    char* readStringInChunks(int);
+    int readNumber();
 private:
     int fd;
     int bufferSize;
