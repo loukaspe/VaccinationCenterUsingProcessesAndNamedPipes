@@ -1,8 +1,8 @@
 #include "Helper.h"
 
-const char* Helper::STRING_COPY_ERROR = "ERROR: Something went wrong with Helper Copy\n";
+const char *Helper::STRING_COPY_ERROR = "ERROR: Something went wrong with Helper Copy\n";
 
-void Helper::handleError(const char * errorMessage) {
+void Helper::handleError(const char *errorMessage) {
     fprintf(
             stderr,
             "%s",
@@ -12,16 +12,16 @@ void Helper::handleError(const char * errorMessage) {
 }
 
 
-char* Helper::copyString(char* source) {
-    char* destination;
+char *Helper::copyString(char *source) {
+    char *destination;
     int stringLength = strlen(source);
 
-    destination = (char*) malloc(
+    destination = (char *) malloc(
             stringLength * sizeof(char)
     );
 
-    if(destination == NULL) {
-        fprintf(stderr, "%s",STRING_COPY_ERROR);
+    if (destination == NULL) {
+        fprintf(stderr, "%s", STRING_COPY_ERROR);
         exit(EXIT_FAILURE);
     }
 
@@ -29,10 +29,10 @@ char* Helper::copyString(char* source) {
     return destination;
 }
 
-bool Helper::inArray(char* needle, char** haystack, int haystackSize) {
+bool Helper::inArray(char *needle, char **haystack, int haystackSize) {
     int i;
-    for( i = 0; i < haystackSize; i++) {
-        if( strcmp( needle, haystack[i] ) == 0 ) {
+    for (i = 0; i < haystackSize; i++) {
+        if (strcmp(needle, haystack[i]) == 0) {
             return true;
         }
     }
@@ -40,21 +40,21 @@ bool Helper::inArray(char* needle, char** haystack, int haystackSize) {
     return false;
 }
 
-bool Helper::hasStringNewLineCharacterInTheEnd(char* string) {
+bool Helper::hasStringNewLineCharacterInTheEnd(char *string) {
     int length = strlen(string);
     return string[length - 1] == '\n';
 }
 
-char* Helper::removeNewLineCharacterFromString(char* string) {
-    if( hasStringNewLineCharacterInTheEnd(string) ) {
+char *Helper::removeNewLineCharacterFromString(char *string) {
+    if (hasStringNewLineCharacterInTheEnd(string)) {
         int length = strlen(string);
-        char* stringWithoutNewLine = (char*) malloc(
+        char *stringWithoutNewLine = (char *) malloc(
                 length * sizeof(char)
         );
 
         int i;
-        for( i = 0; i < length; i++) {
-            if(string[i] == '\n') {
+        for (i = 0; i < length; i++) {
+            if (string[i] == '\n') {
                 stringWithoutNewLine[i] = '\0';
                 continue;
             }
@@ -66,4 +66,44 @@ char* Helper::removeNewLineCharacterFromString(char* string) {
     }
 
     return string;
+}
+
+char **Helper::getAllSubdirectoriesNames(char *path) {
+    int numberOfSubdirectories = 0;
+    char **subdirectories = NULL;
+    DIR *directory = opendir(path);
+    struct dirent *directoryEntry;
+    struct stat sb;
+
+    if (directory == NULL) {
+        Helper::handleError("Could not open current directory");
+    }
+
+    while ((directoryEntry = readdir(directory)) != NULL) {
+        subdirectories = (char **) realloc(
+                subdirectories,
+                (numberOfSubdirectories + 1) * sizeof(char *)
+        );
+
+        // We don't count as subdirectory the current directory, the parent
+        // directory and all other file types
+        if (
+                strcmp(directoryEntry->d_name, ".") == 0
+                || strcmp(directoryEntry->d_name, "..") == 0
+                || fstatat(
+                        dirfd(directory),
+                        directoryEntry->d_name,
+                        &sb,
+                        0
+                    ) < 0
+                || !S_ISDIR(sb.st_mode)
+                ) {
+            continue;
+        }
+        subdirectories[numberOfSubdirectories] = directoryEntry->d_name;
+        numberOfSubdirectories++;
+    }
+
+    closedir(directory);
+    return subdirectories;
 }

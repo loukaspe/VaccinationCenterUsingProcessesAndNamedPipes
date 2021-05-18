@@ -9,6 +9,8 @@
 #include <cstdlib>
 #include <cstdio>
 #include <cmath>
+#include <dirent.h>
+#include <sys/stat.h>
 
 using namespace std;
 
@@ -18,6 +20,7 @@ public:
     static void handleError(const char*);
     static bool inArray(char*, char**, int);
     static char* removeNewLineCharacterFromString(char*);
+    static char** getAllSubdirectoriesNames(char* path);
 private:
     static const char* STRING_COPY_ERROR;
     static bool hasStringNewLineCharacterInTheEnd(char*);
