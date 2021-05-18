@@ -11,7 +11,8 @@ add_executable(
         Helper.cpp Helper.h
 )
 
-add_executable(travelMonitor main.cpp
+add_executable(travelMonitor
+        main.cpp
         BitArray.cpp BitArray.h
         BloomFilter.cpp BloomFilter.h
         Helper.cpp Helper.h

@@ -18,10 +18,11 @@
 
 class PipeWriter {
 public:
-    PipeWriter(int, int, const char*);
+    PipeWriter(int, const char*, int = sizeof(int));
     ~PipeWriter();
     void writeNumber(int);
     void writeStringInChunks(char*);
+    void setBufferSize(int);
 private:
     int fd;
     int bufferSize;
