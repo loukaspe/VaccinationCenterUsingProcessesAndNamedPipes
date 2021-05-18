@@ -20,13 +20,18 @@ private:
     int bufferSize;
     int bloomSizeInKiloBytes;
     char *inputDirectory;
-    char** pipeNames;
-    char*** monitorArguments;
+    char** pipeNamesForTravelMonitorWrite;
+    char** pipeNamesForTravelMonitorRead;
+    PipeReader** pipeReaders;
+    PipeWriter** pipeWriters;
 
-    void createMonitorArguments();
-    void createPipeNames();
+    void createPipeNamesForTravelMonitorRead();
+    void createPipeNamesForTravelMonitorWrite();
+    void createPipeReaders();
+    void createPipeWriters();
 
     static const char* FORK_ERROR;
+    static const char* MALLOC_FAIL_ERROR_MESSAGE;
 public:
     TravelMonitor(int, int, int, char*);
     void createMonitors();

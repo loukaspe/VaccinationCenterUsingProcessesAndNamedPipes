@@ -2,6 +2,7 @@
 #include "TravelMonitor.h"
 
 const char *TravelMonitor::FORK_ERROR = "ERROR: fork() failed to create a new process";
+const char *TravelMonitor::MALLOC_FAIL_ERROR_MESSAGE = "ERROR: malloc() failed to allocate memory";
 
 TravelMonitor::TravelMonitor(
         int numberOfMonitors,
@@ -12,36 +13,43 @@ TravelMonitor::TravelMonitor(
         numberOfMonitors(numberOfMonitors),
         bufferSize(bufferSize),
         bloomSizeInKiloBytes(bloomSizeInKiloBytes),
-        inputDirectory(inputDirectory) {
-    this->createPipeNames();
-
+        inputDirectory(inputDirectory)
+{
+    this->createPipeNamesForTravelMonitorWrite();
+    this->createPipeNamesForTravelMonitorRead();
+    this->createPipeReaders();
+    this->createPipeWriters();
 }
 
-void TravelMonitor::createPipeNames() {
-    this->pipeNames = (char **) malloc(numberOfMonitors * sizeof(char *));
+void TravelMonitor::createPipeNamesForTravelMonitorWrite() {
+    this->pipeNamesForTravelMonitorWrite = (char **) malloc(numberOfMonitors * sizeof(char *));
 
     for (int i = 0; i < numberOfMonitors; i++) {
 
-        // Hardcoded 30 means that we can have up to 9999 pipe names without crashing.
+        // Hardcoded 40 means that we can have up to 9999 pipe names without crashing.
         // Did not have time to make it dynamic depending on number Of Monitors
-        this->pipeNames[i] = (char *) malloc(30 * sizeof(char));
-        sprintf(this->pipeNames[i], "pipeTravelMonitorToMonitor%d", i);
-
-        //TODO: remove, debugging reasons
-        printf("%s\n", this->pipeNames[i]);
+        this->pipeNamesForTravelMonitorWrite[i] = (char *) malloc(40 * sizeof(char));
+        sprintf(
+            this->pipeNamesForTravelMonitorWrite[i],
+            "pipeTravelMonitorWriteToMonitorRead%d",
+            i
+        );
     }
 }
 
-/* Function that creates a 2D string array that holds the arguments' array for
- * each one of the numberOfMonitor Monitors */
-void TravelMonitor::createMonitorArguments() {
-    this->monitorArguments = (char ***) malloc((numberOfMonitors) * sizeof(char **));
-    // Each monitor argv array will have 3 strings: ./monitor, thePipeName, NULL
+void TravelMonitor::createPipeNamesForTravelMonitorRead() {
+    this->pipeNamesForTravelMonitorRead = (char **) malloc(numberOfMonitors * sizeof(char *));
+
     for (int i = 0; i < numberOfMonitors; i++) {
-        this->monitorArguments[i] = (char **) malloc(3 * sizeof(char *));
-        this->monitorArguments[i][0] = "./monitor";
-        this->monitorArguments[i][1] = this->pipeNames[i];
-        this->monitorArguments[i][0] = NULL;
+
+        // Hardcoded 40 means that we can have up to 9999 pipe names without crashing.
+        // Did not have time to make it dynamic depending on number Of Monitors
+        this->pipeNamesForTravelMonitorRead[i] = (char *) malloc(30 * sizeof(char));
+        sprintf(
+            this->pipeNamesForTravelMonitorRead[i],
+            "pipeTravelMonitorReadToMonitorWrite%d",
+            i
+        );
     }
 }
 
@@ -55,14 +63,58 @@ void TravelMonitor::createMonitors() {
         }
 
         if (id == 0) {
-            execvp(
-                    "./monitor",
-                    this->monitorArguments[i]
+            execlp(
+                "./monitor",
+                "./monitor",
+                this->pipeNamesForTravelMonitorWrite[i],
+                this->pipeNamesForTravelMonitorRead[i],
+                NULL
             );
 
             exit(0);
         }
 
+        this->pipeWriters[i]->writeNumber(this->bufferSize);
         wait(NULL);
+    }
+}
+
+void TravelMonitor::createPipeReaders() {
+    /* We want a pipe reader for each monitor to be connected with the travelMonitor.
+    * So we create an array of 'pipes' */
+    int fd[this->numberOfMonitors];
+
+    this->pipeReaders = (PipeReader **) malloc(
+        this->numberOfMonitors * sizeof(PipeReader)
+    );
+    if (pipeReaders == NULL) {
+        Helper::handleError(MALLOC_FAIL_ERROR_MESSAGE);
+    }
+
+    for (int i = 0; i < this->numberOfMonitors; i++) {
+        pipeReaders[i] = new PipeReader(
+            fd[i],
+            this->pipeNamesForTravelMonitorRead[i]
+        );
+    }
+}
+
+void TravelMonitor::createPipeWriters() {
+    /* We want a pipe reader for each monitor to be connected with the travelMonitor.
+    * So we create an array of 'pipes' */
+    int fd[this->numberOfMonitors];
+
+    this->pipeWriters = (PipeWriter **) malloc(
+        this->numberOfMonitors * sizeof(PipeWriter)
+    );
+    if (pipeWriters == NULL) {
+        Helper::handleError(MALLOC_FAIL_ERROR_MESSAGE);
+    }
+
+    for (int i = 0; i < this->numberOfMonitors; i++) {
+        pipeWriters[i] = new PipeWriter(
+            fd[i],
+            this->pipeNamesForTravelMonitorWrite[i]
+        );
     }
 }
