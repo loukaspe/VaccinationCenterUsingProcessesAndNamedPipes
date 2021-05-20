@@ -36,3 +36,5 @@ add_executable(travelMonitor
         PipeReader.cpp PipeReader.h
         PipeWriter.cpp PipeWriter.h
 )
+
+add_custom_command(TARGET travelMonitor PRE_BUILD COMMAND ${CMAKE_COMMAND} -E copy monitor ../)
