@@ -117,12 +117,10 @@ void TravelMonitor::createMonitorsAndPassThemData() {
 
         this->pipeWriters[i]->openPipe();
         this->pipeWriters[i]->writeNumber(this->bufferSize);
-        this->pipeWriters[i]->closePipe();
-//        wait(NULL);
     }
 
     this->passCountriesSubdirectoriesToMonitors();
-    wait(NULL);
+    while(wait(NULL) > 0);
 }
 
 /*
@@ -146,7 +144,6 @@ void TravelMonitor::createMonitorsAndPassThemData() {
                 numberOfMonitorWithSentCountries
             );
 
-            this->pipeWriters[i]->openPipe();
             this->pipeWriters[i]->writeNumber(numberOfCountriesPassedToMonitor);
 
             for(int j = numberOfCountrySubdirectories - 1; j >= 0; j--) {
