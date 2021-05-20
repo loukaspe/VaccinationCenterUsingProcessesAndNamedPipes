@@ -53,10 +53,18 @@ void PipeWriter::writeStringInChunks(char* string) {
     int chunk;
 
     while(writtenBytes < totalBytes) {
+        if(
+            ( this->fd = open(this->filename, OPEN_MODE) ) < 0
+        ) {
+            handlePipeError(OPEN_PIPE_ERROR);
+        }
+
         chunk = ::write(this->fd, string, this->bufferSize);
         if (chunk < 0) {
             handlePipeError(WRITING_ERROR);
         }
+
+        close(fd);
 
         // TODO: Maybe DANGERRRRRR
         // We move the string pointer chunk chars ahead to continue the writing
