@@ -80,11 +80,6 @@ char **Helper::getAllSubdirectoriesNames(char *path) {
     }
 
     while ((directoryEntry = readdir(directory)) != NULL) {
-        subdirectories = (char **) realloc(
-                subdirectories,
-                (numberOfSubdirectories + 1) * sizeof(char *)
-        );
-
         // We don't count as subdirectory the current directory, the parent
         // directory and all other file types
         if (
@@ -95,15 +90,60 @@ char **Helper::getAllSubdirectoriesNames(char *path) {
                         directoryEntry->d_name,
                         &sb,
                         0
-                    ) < 0
+                ) < 0
                 || !S_ISDIR(sb.st_mode)
                 ) {
             continue;
         }
-        subdirectories[numberOfSubdirectories] = directoryEntry->d_name;
+        subdirectories = (char **) realloc(
+                subdirectories,
+                (numberOfSubdirectories + 1) * sizeof(char *)
+        );
+        subdirectories[numberOfSubdirectories] = Helper::copyString(directoryEntry->d_name);
         numberOfSubdirectories++;
     }
 
     closedir(directory);
     return subdirectories;
+}
+
+int Helper::getAllSubdirectoriesNumber(char *path) {
+    int numberOfSubdirectories = 0;
+    DIR *directory = opendir(path);
+    struct dirent *directoryEntry;
+    struct stat sb;
+
+    if (directory == NULL) {
+        Helper::handleError("Could not open current directory");
+    }
+
+    while ((directoryEntry = readdir(directory)) != NULL) {
+        // We don't count as subdirectory the current directory, the parent
+        // directory and all other file types
+        if (
+                strcmp(directoryEntry->d_name, ".") == 0
+                || strcmp(directoryEntry->d_name, "..") == 0
+                || fstatat(
+                        dirfd(directory),
+                        directoryEntry->d_name,
+                        &sb,
+                        0
+                ) < 0
+                || !S_ISDIR(sb.st_mode)
+                )
+        {
+            continue;
+        }
+        numberOfSubdirectories++;
+    }
+
+    closedir(directory);
+    return numberOfSubdirectories;
+}
+
+/* Function that given two ints, it divides them and the the ceiling of their quotient */
+int Helper::getCeilingOfDividedInts(int a, int b) {
+    return  (int) ceil(
+        (float) a / (float) b
+    );
 }

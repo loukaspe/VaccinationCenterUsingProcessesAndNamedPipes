@@ -21,6 +21,8 @@ public:
     static bool inArray(char*, char**, int);
     static char* removeNewLineCharacterFromString(char*);
     static char** getAllSubdirectoriesNames(char* path);
+    static int getAllSubdirectoriesNumber(char* path);
+    static int getCeilingOfDividedInts(int, int);
 private:
     static const char* STRING_COPY_ERROR;
     static bool hasStringNewLineCharacterInTheEnd(char*);
