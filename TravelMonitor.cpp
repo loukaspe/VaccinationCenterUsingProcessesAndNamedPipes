@@ -67,7 +67,8 @@ void TravelMonitor::createPipeReaders() {
     for (int i = 0; i < this->numberOfMonitors; i++) {
         pipeReaders[i] = new PipeReader(
                 fd[i],
-                this->pipeNamesForTravelMonitorRead[i]
+                this->pipeNamesForTravelMonitorRead[i],
+                this->bufferSize
         );
     }
 }
@@ -87,7 +88,8 @@ void TravelMonitor::createPipeWriters() {
     for (int i = 0; i < this->numberOfMonitors; i++) {
         pipeWriters[i] = new PipeWriter(
                 fd[i],
-                this->pipeNamesForTravelMonitorWrite[i]
+                this->pipeNamesForTravelMonitorWrite[i],
+                this->bufferSize
         );
     }
 }
@@ -113,11 +115,12 @@ void TravelMonitor::createMonitorsAndPassThemData() {
             exit(0);
         }
 
+        this->pipeWriters[i]->openPipe();
         this->pipeWriters[i]->writeNumber(this->bufferSize);
+        this->pipeWriters[i]->closePipe();
 //        wait(NULL);
     }
 
-    sleep(3);
     this->passCountriesSubdirectoriesToMonitors();
     wait(NULL);
 }
@@ -129,8 +132,8 @@ void TravelMonitor::createMonitorsAndPassThemData() {
  * actual string
  */
     void TravelMonitor::passCountriesSubdirectoriesToMonitors() {
-        char **countrySubdirectories = Helper::getAllSubdirectoriesNames("../inputDirectory");
-        int numberOfCountrySubdirectories = Helper::getAllSubdirectoriesNumber("../inputDirectory");
+        char **countrySubdirectories = Helper::getAllSubdirectoriesNames(this->inputDirectory);
+        int numberOfCountrySubdirectories = Helper::getAllSubdirectoriesNumber(this->inputDirectory);
         int remainingNumberOfCountrySubdirectories = numberOfCountrySubdirectories;
         int divisionRemainder;
         int subdirectoryNameLength;
@@ -143,20 +146,22 @@ void TravelMonitor::createMonitorsAndPassThemData() {
                 numberOfMonitorWithSentCountries
             );
 
+            this->pipeWriters[i]->openPipe();
             this->pipeWriters[i]->writeNumber(numberOfCountriesPassedToMonitor);
 
             for(int j = numberOfCountrySubdirectories - 1; j >= 0; j--) {
                 divisionRemainder = j % numberOfMonitors;
 
                 if(divisionRemainder == i) {
-                    printf("going to pass to %d %s\n", i, countrySubdirectories[j]);
                     subdirectoryNameLength = strlen(countrySubdirectories[j]);
-//                    this->pipeWriters[i]->writeNumber(subdirectoryNameLength);
-//                    this->pipeWriters[i]->writeStringInChunks(countrySubdirectories[j]);
+                    this->pipeWriters[i]->writeNumber(subdirectoryNameLength);
+
+                    this->pipeWriters[i]->writeStringInChunks(countrySubdirectories[j]);
                 }
             }
 
             remainingNumberOfCountrySubdirectories -= numberOfCountriesPassedToMonitor;
             numberOfMonitorWithSentCountries--;
+            this->pipeWriters[i]->closePipe();
         }
     }

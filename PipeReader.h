@@ -19,17 +19,16 @@ class PipeReader {
 public:
     PipeReader(int, const char*, int = sizeof(int));
     ~PipeReader();
-    char* readStringInChunks(int);
     char* readStringInChunksWithBlock(int);
-    int readNumber();
     int readNumberWithBlock();
     void setBufferSize(int);
+    void openPipe();
+    void closePipe();
 private:
     int fd;
     int bufferSize;
     const char* filename;
     static const int FIFO_MODE;
-    static const int OPEN_MODE;
     static const int OPEN_MODE_WITH_BLOCK;
     static const char* MKFIFO_ERROR;
     static const char* OPEN_PIPE_ERROR;

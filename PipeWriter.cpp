@@ -30,41 +30,31 @@ PipeWriter::~PipeWriter() {
 // I assume for simplicity that bufferSize >= sizeOf(int)
 void PipeWriter::writeNumber(int number) {
     if(
-        ( this->fd = open(this->filename, OPEN_MODE) ) < 0
-    ) {
-        handlePipeError(OPEN_PIPE_ERROR);
-    }
-
-    int bufferSize = sizeof(int);
-
-    if(
-        ::write( this->fd, &number, bufferSize ) < 0
+        ::write(this->fd, &number, sizeof(int) ) < 0
     ) {
         handlePipeError(WRITING_ERROR);
     }
-
-    close(fd);
 }
 
 void PipeWriter::writeStringInChunks(char* string) {
-    int totalBytes = sizeof(string);
+    int totalBytes = strlen(string);
 
     int writtenBytes = 0;
     int chunk;
 
-    while(writtenBytes < totalBytes) {
-        if(
-            ( this->fd = open(this->filename, OPEN_MODE) ) < 0
-        ) {
-            handlePipeError(OPEN_PIPE_ERROR);
+    if(totalBytes < this->bufferSize) {
+        if (::write(this->fd, string, totalBytes) < 0) {
+            handlePipeError(WRITING_ERROR);
         }
 
+        return;
+    }
+
+    while(writtenBytes < totalBytes) {
         chunk = ::write(this->fd, string, this->bufferSize);
         if (chunk < 0) {
             handlePipeError(WRITING_ERROR);
         }
-
-        close(fd);
 
         // TODO: Maybe DANGERRRRRR
         // We move the string pointer chunk chars ahead to continue the writing
@@ -72,7 +62,6 @@ void PipeWriter::writeStringInChunks(char* string) {
         string += chunk;
 
         writtenBytes += chunk;
-        totalBytes -= chunk;
     }
 }
 
@@ -85,4 +74,16 @@ void PipeWriter::handlePipeError(const char* errorMessage) {
 
 void PipeWriter::setBufferSize(int bufferSize) {
     this->bufferSize = bufferSize;
+}
+
+void PipeWriter::openPipe() {
+    if(
+        ( this->fd = open(this->filename, OPEN_MODE) ) < 0
+    ) {
+        handlePipeError(OPEN_PIPE_ERROR);
+    }
+}
+
+void PipeWriter::closePipe() {
+    close(this->fd);
 }

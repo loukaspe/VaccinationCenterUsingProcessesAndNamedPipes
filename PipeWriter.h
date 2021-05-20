@@ -23,6 +23,8 @@ public:
     void writeNumber(int);
     void writeStringInChunks(char*);
     void setBufferSize(int);
+    void openPipe();
+    void closePipe();
 private:
     int fd;
     int bufferSize;
