@@ -1,5 +1,6 @@
 #include "PipeReader.h"
 #include "PipeWriter.h"
+#include "Monitor.h"
 
 using namespace std;
 
@@ -29,14 +30,52 @@ int main(int argc, char **argv) {
 //    cout << "oo " << bufferSize << endl;
 
     int expectedCountryNames = pipeReader->readNumberWithBlock();
+    char** countriesSubdirectories = (char**) malloc(
+            expectedCountryNames * sizeof(char*)
+    );
 //    cout << "ee " << expectedCountryNames << endl;
     for(int i = 0; i < expectedCountryNames; i++) {
         int countryNameLength = pipeReader->readNumberWithBlock();
 //        cout << "aa " << countryNameLength << endl;
-        char* countryName = pipeReader->readStringInChunksWithBlock(countryNameLength);
+        countriesSubdirectories[i] = pipeReader->readStringInChunksWithBlock(countryNameLength);
 //        printf("read %s\n", countryName);
     }
     pipeReader->closePipe();
+
+    PersonLinkedList *people = new PersonLinkedList();
+    VirusLinkedList *viruses = new VirusLinkedList();
+    CountryLinkedList *countries = new CountryLinkedList();
+
+    VaccinationCenter *vaccinationCenter = new VaccinationCenter(
+            people,
+            viruses,
+            countries
+    );
+
+    CitizenRecordsFileReader *fileReader = new CitizenRecordsFileReader(
+            vaccinationCenter
+    );
+
+    Monitor* monitor = new Monitor(
+        people,
+        viruses,
+        countries,
+        vaccinationCenter,
+        fileReader
+    );
+
+    for(int i = 0; i < expectedCountryNames; i++) {
+        char* path = Helper::turnCountryNameToDirectoryName(countriesSubdirectories[i]);
+
+        int numberOfFiles = Helper::getAllFilesNumber(path);
+        char** countriesFile = Helper::getAllFilesNames(path);
+
+        for(int j = 0; j < numberOfFiles; j++) {
+            fileReader->readAndUpdateStructures(countriesFile[j]);
+        }
+    }
+
+
 
     return 0;
 }

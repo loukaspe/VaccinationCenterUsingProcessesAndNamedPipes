@@ -41,7 +41,8 @@ int main(int argc, char *argv[]) {
             inputDirectory
     );
 
-    travelMonitor->createMonitorsAndPassThemData();//    PersonLinkedList *people = new PersonLinkedList();
+    travelMonitor->createMonitorsAndPassThemData();
+//    PersonLinkedList *people = new PersonLinkedList();
 //    VirusLinkedList *viruses = new VirusLinkedList();
 //    CountryLinkedList *countries = new CountryLinkedList();
 //

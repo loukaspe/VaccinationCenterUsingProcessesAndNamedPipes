@@ -9,6 +9,7 @@ add_executable(
         PipeReader.cpp PipeReader.h
         PipeWriter.cpp PipeWriter.h
         Helper.cpp Helper.h
+        Monitor.cpp Monitor.h
 )
 
 add_executable(travelMonitor
