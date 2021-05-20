@@ -5,9 +5,8 @@
 
 class CitizenRecordsFileReader {
 public:
-    CitizenRecordsFileReader(char *, VaccinationCenter*);
-
-    void readAndUpdateStructures();
+    CitizenRecordsFileReader(VaccinationCenter*);
+    void readAndUpdateStructures(char* filename);
 
 private:
     char *fileName;

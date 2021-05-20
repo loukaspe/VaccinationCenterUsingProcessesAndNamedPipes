@@ -7,14 +7,13 @@ const char *CitizenRecordsFileReader::SPACE_DELIMITER = " ";
 const char *CitizenRecordsFileReader::ERROR_IN_READING_FILE = "ERROR: Cannot read file\n";
 
 CitizenRecordsFileReader::CitizenRecordsFileReader(
-        char *fileName,
         VaccinationCenter *vaccinationCenter
-) : fileName(fileName), vaccinationCenter(vaccinationCenter) {}
+) : vaccinationCenter(vaccinationCenter) {}
 
 // 889 John Papadopoulos Greece 52 COVID-19 YES 27-12-2020
 // 889 John Papadopoulos Greece 52 Η1Ν1 ΝΟ
 
-void CitizenRecordsFileReader::readAndUpdateStructures() {
+void CitizenRecordsFileReader::readAndUpdateStructures(char* filename) {
     if (fileName == NULL) {
         Helper::handleError(NO_INPUT_FILE_ERROR);
     }
