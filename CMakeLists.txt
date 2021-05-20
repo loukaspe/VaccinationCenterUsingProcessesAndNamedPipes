@@ -35,9 +35,4 @@ add_executable(travelMonitor
         TravelMonitor.cpp TravelMonitor.h
         PipeReader.cpp PipeReader.h
         PipeWriter.cpp PipeWriter.h
-)
-
-add_custom_command(TARGET travelMonitor POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy monitor ../)
-add_custom_command(TARGET travelMonitor POST_BUILD COMMAND ${CMAKE_COMMAND} -E echo "copy komple")
-add_custom_command(TARGET travelMonitor POST_BUILD COMMAND ${CMAKE_COMMAND} -E rm pipeTravelM*)
-add_custom_command(TARGET travelMonitor POST_BUILD COMMAND ${CMAKE_COMMAND} -E echo "remove komple")
+        )
