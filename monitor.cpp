@@ -24,7 +24,16 @@ int main(int argc, char **argv) {
     int bufferSize = pipeReader->readNumberWithBlock();
     pipeReader->setBufferSize(bufferSize);
     pipeWriter->setBufferSize(bufferSize);
+
     cout << "oo " << bufferSize << endl;
+
+    int expectedCountryNames = pipeReader->readNumberWithBlock();
+    cout << "ee " << expectedCountryNames << endl;
+//    for(int i = 0; i < expectedCountryNames; i++) {
+//        int countryNameLength = pipeReader->readNumberWithBlock();
+//        char* countryName = pipeReader->readStringInChunksWithBlock(countryNameLength);
+//        printf("read %s", countryName);
+//    }
 
     return 0;
 }

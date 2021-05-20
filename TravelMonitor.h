@@ -29,12 +29,13 @@ private:
     void createPipeNamesForTravelMonitorWrite();
     void createPipeReaders();
     void createPipeWriters();
+    void passCountriesSubdirectoriesToMonitors();
 
     static const char* FORK_ERROR;
     static const char* MALLOC_FAIL_ERROR_MESSAGE;
 public:
     TravelMonitor(int, int, int, char*);
-    void createMonitors();
+    void createMonitorsAndPassThemData();
 };
 
 

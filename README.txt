@@ -15,3 +15,10 @@ Important Disclaimers:
     it in chunks. We read a small chunk of the total bytes until we reach total size
     and then add these bytes to the variable to be returned. For example check
     PipeReader::readStringInChunks();
+
+4. Protocol for passing subdirectories names to Monitors:
+    a. We pass the number of subdirectories' names that are going to be passed
+    b. foreach subdirectory's name we pass firstly it's size, then the name itself
+
+TODO:
+1. in dtor delete all pointers

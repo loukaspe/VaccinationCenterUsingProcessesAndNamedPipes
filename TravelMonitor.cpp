@@ -13,8 +13,7 @@ TravelMonitor::TravelMonitor(
         numberOfMonitors(numberOfMonitors),
         bufferSize(bufferSize),
         bloomSizeInKiloBytes(bloomSizeInKiloBytes),
-        inputDirectory(inputDirectory)
-{
+        inputDirectory(inputDirectory) {
     this->createPipeNamesForTravelMonitorWrite();
     this->createPipeNamesForTravelMonitorRead();
     this->createPipeReaders();
@@ -30,9 +29,9 @@ void TravelMonitor::createPipeNamesForTravelMonitorWrite() {
         // Did not have time to make it dynamic depending on number Of Monitors
         this->pipeNamesForTravelMonitorWrite[i] = (char *) malloc(40 * sizeof(char));
         sprintf(
-            this->pipeNamesForTravelMonitorWrite[i],
-            "pipeTravelMonitorWriteToMonitorRead%d",
-            i
+                this->pipeNamesForTravelMonitorWrite[i],
+                "pipeTravelMonitorWriteToMonitorRead%d",
+                i
         );
     }
 }
@@ -46,36 +45,10 @@ void TravelMonitor::createPipeNamesForTravelMonitorRead() {
         // Did not have time to make it dynamic depending on number Of Monitors
         this->pipeNamesForTravelMonitorRead[i] = (char *) malloc(30 * sizeof(char));
         sprintf(
-            this->pipeNamesForTravelMonitorRead[i],
-            "pipeTravelMonitorReadToMonitorWrite%d",
-            i
-        );
-    }
-}
-
-void TravelMonitor::createMonitors() {
-    for (int i = 0; i < this->numberOfMonitors; i++) {
-        pid_t id = fork();
-
-        if (id == -1) {
-            perror(FORK_ERROR);
-            exit(1);
-        }
-
-        if (id == 0) {
-            execlp(
-                "./monitor",
-                "./monitor",
-                this->pipeNamesForTravelMonitorWrite[i],
                 this->pipeNamesForTravelMonitorRead[i],
-                NULL
-            );
-
-            exit(0);
-        }
-
-        this->pipeWriters[i]->writeNumber(this->bufferSize);
-        wait(NULL);
+                "pipeTravelMonitorReadToMonitorWrite%d",
+                i
+        );
     }
 }
 
@@ -85,7 +58,7 @@ void TravelMonitor::createPipeReaders() {
     int fd[this->numberOfMonitors];
 
     this->pipeReaders = (PipeReader **) malloc(
-        this->numberOfMonitors * sizeof(PipeReader)
+            this->numberOfMonitors * sizeof(PipeReader)
     );
     if (pipeReaders == NULL) {
         Helper::handleError(MALLOC_FAIL_ERROR_MESSAGE);
@@ -93,8 +66,8 @@ void TravelMonitor::createPipeReaders() {
 
     for (int i = 0; i < this->numberOfMonitors; i++) {
         pipeReaders[i] = new PipeReader(
-            fd[i],
-            this->pipeNamesForTravelMonitorRead[i]
+                fd[i],
+                this->pipeNamesForTravelMonitorRead[i]
         );
     }
 }
@@ -105,7 +78,7 @@ void TravelMonitor::createPipeWriters() {
     int fd[this->numberOfMonitors];
 
     this->pipeWriters = (PipeWriter **) malloc(
-        this->numberOfMonitors * sizeof(PipeWriter)
+            this->numberOfMonitors * sizeof(PipeWriter)
     );
     if (pipeWriters == NULL) {
         Helper::handleError(MALLOC_FAIL_ERROR_MESSAGE);
@@ -113,8 +86,77 @@ void TravelMonitor::createPipeWriters() {
 
     for (int i = 0; i < this->numberOfMonitors; i++) {
         pipeWriters[i] = new PipeWriter(
-            fd[i],
-            this->pipeNamesForTravelMonitorWrite[i]
+                fd[i],
+                this->pipeNamesForTravelMonitorWrite[i]
         );
     }
 }
+
+void TravelMonitor::createMonitorsAndPassThemData() {
+    for (int i = 0; i < this->numberOfMonitors; i++) {
+        pid_t id = fork();
+
+        if (id == -1) {
+            perror(FORK_ERROR);
+            exit(1);
+        }
+
+        if (id == 0) {
+            execlp(
+                    "./monitor",
+                    "./monitor",
+                    this->pipeNamesForTravelMonitorWrite[i],
+                    this->pipeNamesForTravelMonitorRead[i],
+                    NULL
+            );
+
+            exit(0);
+        }
+
+        this->pipeWriters[i]->writeNumber(this->bufferSize);
+//        wait(NULL);
+    }
+
+    sleep(3);
+    this->passCountriesSubdirectoriesToMonitors();
+    wait(NULL);
+}
+
+/*
+ * This function takes all countriesSubdirectories' names and then counts
+ * how many names exist for each monitor and then sends through the pipes:
+ * 1. the number of expected names, 2. foreach name: it's number of bytes and the
+ * actual string
+ */
+    void TravelMonitor::passCountriesSubdirectoriesToMonitors() {
+        char **countrySubdirectories = Helper::getAllSubdirectoriesNames("../inputDirectory");
+        int numberOfCountrySubdirectories = Helper::getAllSubdirectoriesNumber("../inputDirectory");
+        int remainingNumberOfCountrySubdirectories = numberOfCountrySubdirectories;
+        int divisionRemainder;
+        int subdirectoryNameLength;
+        int numberOfCountriesPassedToMonitor;
+        int numberOfMonitorWithSentCountries = numberOfMonitors;
+
+        for (int i = 0; i < numberOfMonitors; i++) {
+            numberOfCountriesPassedToMonitor = Helper::getCeilingOfDividedInts(
+                remainingNumberOfCountrySubdirectories,
+                numberOfMonitorWithSentCountries
+            );
+
+            this->pipeWriters[i]->writeNumber(numberOfCountriesPassedToMonitor);
+
+            for(int j = numberOfCountrySubdirectories - 1; j >= 0; j--) {
+                divisionRemainder = j % numberOfMonitors;
+
+                if(divisionRemainder == i) {
+                    printf("going to pass to %d %s\n", i, countrySubdirectories[j]);
+                    subdirectoryNameLength = strlen(countrySubdirectories[j]);
+//                    this->pipeWriters[i]->writeNumber(subdirectoryNameLength);
+//                    this->pipeWriters[i]->writeStringInChunks(countrySubdirectories[j]);
+                }
+            }
+
+            remainingNumberOfCountrySubdirectories -= numberOfCountriesPassedToMonitor;
+            numberOfMonitorWithSentCountries--;
+        }
+    }
