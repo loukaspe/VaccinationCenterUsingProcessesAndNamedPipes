@@ -8,8 +8,8 @@ int main(int argc, char **argv) {
     char* pipeNameForWriting = argv[2];
     int fd;
 
-    cout << "--" << pipeNameForReading << endl;
-    cout << "--" << pipeNameForWriting << endl;
+//    cout << "--" << pipeNameForReading << endl;
+//    cout << "--" << pipeNameForWriting << endl;
 
     PipeWriter* pipeWriter = new PipeWriter(
         fd,
@@ -26,15 +26,15 @@ int main(int argc, char **argv) {
     pipeReader->setBufferSize(bufferSize);
     pipeWriter->setBufferSize(bufferSize);
 
-    cout << "oo " << bufferSize << endl;
+//    cout << "oo " << bufferSize << endl;
 
     int expectedCountryNames = pipeReader->readNumberWithBlock();
-    cout << "ee " << expectedCountryNames << endl;
+//    cout << "ee " << expectedCountryNames << endl;
     for(int i = 0; i < expectedCountryNames; i++) {
         int countryNameLength = pipeReader->readNumberWithBlock();
-        cout << "aa " << countryNameLength << endl;
+//        cout << "aa " << countryNameLength << endl;
         char* countryName = pipeReader->readStringInChunksWithBlock(countryNameLength);
-        printf("read %s\n", countryName);
+//        printf("read %s\n", countryName);
     }
     pipeReader->closePipe();
 
