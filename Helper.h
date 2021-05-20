@@ -22,7 +22,10 @@ public:
     static char* removeNewLineCharacterFromString(char*);
     static char** getAllSubdirectoriesNames(char* path);
     static int getAllSubdirectoriesNumber(char* path);
+    static char** getAllFilesNames(char* path);
+    static int getAllFilesNumber(char* path);
     static int getCeilingOfDividedInts(int, int);
+    static char* turnCountryNameToDirectoryName(char*);
 private:
     static const char* STRING_COPY_ERROR;
     static bool hasStringNewLineCharacterInTheEnd(char*);

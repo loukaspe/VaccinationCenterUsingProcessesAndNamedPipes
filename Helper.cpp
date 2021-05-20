@@ -147,3 +147,63 @@ int Helper::getCeilingOfDividedInts(int a, int b) {
         (float) a / (float) b
     );
 }
+
+char **Helper::getAllFilesNames(char *path) {
+    int numberOfFiles = 0;
+    char **files = NULL;
+    DIR *directory = opendir(path);
+    struct dirent *directoryEntry;
+    struct stat sb;
+
+    if (directory == NULL) {
+        Helper::handleError("Could not open current directory");
+    }
+
+    while ((directoryEntry = readdir(directory)) != NULL) {
+        if (S_ISDIR(sb.st_mode)) {
+            continue;
+        }
+        files = (char **) realloc(
+            files,
+            (numberOfFiles + 1) * sizeof(char *)
+        );
+
+        files[numberOfFiles] = Helper::copyString(directoryEntry->d_name);
+        numberOfFiles++;
+    }
+
+    closedir(directory);
+    return files;
+}
+
+int Helper::getAllFilesNumber(char *path) {
+    int numberOfFiles = 0;
+    DIR *directory = opendir(path);
+    struct stat sb;
+
+    if (directory == NULL) {
+        Helper::handleError("Could not open current directory");
+    }
+
+    while ((readdir(directory)) != NULL) {
+        if (S_ISDIR(sb.st_mode)) {
+            continue;
+        }
+
+        numberOfFiles++;
+    }
+
+    closedir(directory);
+    return numberOfFiles;
+}
+
+/* Function that will take a country name and turn it into a path for the according
+ * directory. For example 'France' will turn to './France' */
+char *Helper::turnCountryNameToDirectoryName(char* country) {
+    int stringLength = strlen(country);
+    // We allocate memory for two extra characters, './'
+    char* path = (char*) realloc(country, stringLength + 2);
+    sprintf(path, "./%s", country);
+
+    return path;
+}
