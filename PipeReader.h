@@ -20,6 +20,7 @@ public:
     PipeReader(int, const char*, int = sizeof(int));
     ~PipeReader();
     char* readStringInChunks(int);
+    char* readStringInChunksWithBlock(int);
     int readNumber();
     int readNumberWithBlock();
     void setBufferSize(int);

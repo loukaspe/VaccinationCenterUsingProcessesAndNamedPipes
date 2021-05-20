@@ -85,6 +85,43 @@ int PipeReader::readNumberWithBlock() {
 }
 
 char *PipeReader::readStringInChunks(int totalBytes) {
+    if(
+        ( this->fd = open(this->filename, OPEN_MODE) ) == -1
+    ) {
+        handlePipeError(OPEN_PIPE_ERROR);
+    }
+
+    char* string = (char*) malloc(totalBytes * sizeof(char));
+    if (string == NULL) {
+        Helper::handleError(MALLOC_FAIL_ERROR_MESSAGE);
+    }
+
+    char rawBytes[this->bufferSize];
+    int readBytes = 0;
+    int chunk;
+
+    while(readBytes < totalBytes) {
+        chunk = ::read(this->fd, rawBytes, this->bufferSize);
+        if (chunk < 0) {
+            handlePipeError(READING_ERROR);
+        }
+
+        strncat(string, rawBytes, chunk);
+        readBytes += chunk;
+        // TODO: is this needed ?? totalBytes -= chunk;
+    }
+
+    close(fd);
+    return string;
+}
+
+char *PipeReader::readStringInChunksWithBlock(int totalBytes) {
+    if(
+        ( this->fd = open(this->filename, OPEN_MODE_WITH_BLOCK) ) == -1
+    ) {
+        handlePipeError(OPEN_PIPE_ERROR);
+    }
+
     char* string = (char*) malloc(totalBytes * sizeof(char));
     if (string == NULL) {
         Helper::handleError(MALLOC_FAIL_ERROR_MESSAGE);
@@ -105,6 +142,7 @@ char *PipeReader::readStringInChunks(int totalBytes) {
         totalBytes -= chunk;
     }
 
+    close(fd);
     return string;
 }
 
