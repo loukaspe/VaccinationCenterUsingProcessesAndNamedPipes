@@ -76,6 +76,7 @@ char **Helper::getAllSubdirectoriesNames(char *path) {
     struct stat sb;
 
     if (directory == NULL) {
+        cout << "ERROR: " << errno << endl;
         Helper::handleError("Could not open current directory");
     }
 
@@ -114,6 +115,7 @@ int Helper::getAllSubdirectoriesNumber(char *path) {
     struct stat sb;
 
     if (directory == NULL) {
+        cout << "ERROR: " << errno << endl;
         Helper::handleError("Could not open current directory");
     }
 
@@ -155,6 +157,7 @@ char **Helper::getAllFilesNames(char *path) {
     struct stat sb;
 
     if (directory == NULL) {
+        cout << "ERROR: " << errno << endl;
         Helper::handleError("Could not open current directory");
     }
 
@@ -181,6 +184,7 @@ int Helper::getAllFilesNumber(char *path) {
     struct stat sb;
 
     if (directory == NULL) {
+        cout << "ERROR: " << errno << endl;
         Helper::handleError("Could not open current directory");
     }
 
