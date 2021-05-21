@@ -130,8 +130,7 @@ int Helper::getAllSubdirectoriesNumber(char *path) {
                         0
                 ) < 0
                 || !S_ISDIR(sb.st_mode)
-                )
-        {
+                ) {
             continue;
         }
         numberOfSubdirectories++;
@@ -143,8 +142,8 @@ int Helper::getAllSubdirectoriesNumber(char *path) {
 
 /* Function that given two ints, it divides them and the the ceiling of their quotient */
 int Helper::getCeilingOfDividedInts(int a, int b) {
-    return  (int) ceil(
-        (float) a / (float) b
+    return (int) ceil(
+            (float) a / (float) b
     );
 }
 
@@ -164,8 +163,8 @@ char **Helper::getAllFilesNames(char *path) {
             continue;
         }
         files = (char **) realloc(
-            files,
-            (numberOfFiles + 1) * sizeof(char *)
+                files,
+                (numberOfFiles + 1) * sizeof(char *)
         );
 
         files[numberOfFiles] = Helper::copyString(directoryEntry->d_name);
@@ -199,11 +198,18 @@ int Helper::getAllFilesNumber(char *path) {
 
 /* Function that will take a country name and turn it into a path for the according
  * directory. For example 'France' will turn to './France' */
-char *Helper::turnCountryNameToDirectoryName(char* country) {
+char *Helper::turnCountryNameToDirectoryName(char *country) {
     int stringLength = strlen(country);
+
     // We allocate memory for two extra characters, './'
-    char* path = (char*) realloc(country, stringLength + 2);
-    sprintf(path, "./%s", country);
+    char *path = (char *) malloc(
+            (stringLength + 2) * sizeof(char)
+    );
+
+    path[0] = '.';
+    path[1] = '/';
+
+    strcat(path, country);
 
     return path;
 }
