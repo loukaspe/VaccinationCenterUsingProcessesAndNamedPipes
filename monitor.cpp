@@ -27,6 +27,11 @@ int main(int argc, char **argv) {
     pipeReader->setBufferSize(bufferSize);
     pipeWriter->setBufferSize(bufferSize);
 
+    int inputDirectorySize = pipeReader->readNumberWithBlock();
+    char* inputDirectory = pipeReader->readStringInChunksWithBlock(inputDirectorySize);
+
+//    cout << "--" << inputDirectory << endl;
+
 //    cout << "oo " << bufferSize << endl;
 
     int expectedCountryNames = pipeReader->readNumberWithBlock();
@@ -38,7 +43,7 @@ int main(int argc, char **argv) {
         int countryNameLength = pipeReader->readNumberWithBlock();
 //        cout << "aa " << countryNameLength << endl;
         countriesSubdirectories[i] = pipeReader->readStringInChunksWithBlock(countryNameLength);
-//        printf("read %s\n", countryName);
+//        printf("read %s\n", countriesSubdirectories[i]);
     }
     pipeReader->closePipe();
 

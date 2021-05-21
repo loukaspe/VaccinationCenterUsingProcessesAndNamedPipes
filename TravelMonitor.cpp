@@ -117,6 +117,10 @@ void TravelMonitor::createMonitorsAndPassThemData() {
 
         this->pipeWriters[i]->openPipe();
         this->pipeWriters[i]->writeNumber(this->bufferSize);
+
+        int inputDirectorySize = strlen(this->inputDirectory);
+        this->pipeWriters[i]->writeNumber(inputDirectorySize);
+        this->pipeWriters[i]->writeStringInChunks(inputDirectory);
     }
 
     this->passCountriesSubdirectoriesToMonitors();
