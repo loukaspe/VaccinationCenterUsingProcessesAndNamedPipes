@@ -25,7 +25,6 @@ public:
     static char** getAllFilesNames(char* path);
     static int getAllFilesNumber(char* path);
     static int getCeilingOfDividedInts(int, int);
-    static char* turnCountryNameToDirectoryName(char*);
 private:
     static const char* STRING_COPY_ERROR;
     static bool hasStringNewLineCharacterInTheEnd(char*);

@@ -69,8 +69,18 @@ int main(int argc, char **argv) {
         fileReader
     );
 
+    char* directoryCharacter = "/";
+    int directoryCharacterSize = strlen(directoryCharacter);
+
     for(int i = 0; i < expectedCountryNames; i++) {
-        char* path = Helper::turnCountryNameToDirectoryName(countriesSubdirectories[i]);
+        int countryNameSize = strlen(countriesSubdirectories[i]);
+        char *path = (char*) malloc(
+            inputDirectorySize + countryNameSize + directoryCharacterSize + 1
+        );
+        strcpy(path, inputDirectory);
+        strcat(path, directoryCharacter);
+        strcat(path, countriesSubdirectories[i]);
+        cout << path << endl;
 
         int numberOfFiles = Helper::getAllFilesNumber(path);
         char** countriesFile = Helper::getAllFilesNames(path);

@@ -199,21 +199,3 @@ int Helper::getAllFilesNumber(char *path) {
     closedir(directory);
     return numberOfFiles;
 }
-
-/* Function that will take a country name and turn it into a path for the according
- * directory. For example 'France' will turn to './France' */
-char *Helper::turnCountryNameToDirectoryName(char *country) {
-    int stringLength = strlen(country);
-
-    // We allocate memory for two extra characters, './'
-    char *path = (char *) malloc(
-            (stringLength + 2) * sizeof(char)
-    );
-
-    path[0] = '.';
-    path[1] = '/';
-
-    strcat(path, country);
-
-    return path;
-}
