@@ -80,12 +80,13 @@ int main(int argc, char **argv) {
         strcpy(path, inputDirectory);
         strcat(path, directoryCharacter);
         strcat(path, countriesSubdirectories[i]);
-        cout << path << endl;
+//        cout << path << endl;
 
         int numberOfFiles = Helper::getAllFilesNumber(path);
         char** countriesFile = Helper::getAllFilesNames(path);
 
         for(int j = 0; j < numberOfFiles; j++) {
+//            cout << countriesFile[j] << endl;
             fileReader->readAndUpdateStructures(countriesFile[j]);
         }
     }

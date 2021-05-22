@@ -162,9 +162,18 @@ char **Helper::getAllFilesNames(char *path) {
     }
 
     while ((directoryEntry = readdir(directory)) != NULL) {
-        if (S_ISDIR(sb.st_mode)) {
+        if (
+                fstatat(
+                        dirfd(directory),
+                        directoryEntry->d_name,
+                        &sb,
+                        0
+                ) < 0
+                || S_ISDIR(sb.st_mode)
+                ) {
             continue;
         }
+
         files = (char **) realloc(
                 files,
                 (numberOfFiles + 1) * sizeof(char *)
@@ -181,6 +190,7 @@ char **Helper::getAllFilesNames(char *path) {
 int Helper::getAllFilesNumber(char *path) {
     int numberOfFiles = 0;
     DIR *directory = opendir(path);
+    struct dirent *directoryEntry;
     struct stat sb;
 
     if (directory == NULL) {
@@ -188,8 +198,16 @@ int Helper::getAllFilesNumber(char *path) {
         Helper::handleError("Could not open current directory");
     }
 
-    while ((readdir(directory)) != NULL) {
-        if (S_ISDIR(sb.st_mode)) {
+    while ((directoryEntry = readdir(directory)) != NULL) {
+        if (
+                fstatat(
+                        dirfd(directory),
+                        directoryEntry->d_name,
+                        &sb,
+                        0
+                ) < 0
+                || S_ISDIR(sb.st_mode)
+                ) {
             continue;
         }
 
