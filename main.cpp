@@ -40,6 +40,7 @@ int main(int argc, char *argv[]) {
     );
 
     travelMonitor->createMonitorsAndPassThemData();
+    travelMonitor->getBloomFiltersFromMonitors();
 
 //    MenuPromptCreator *menuPromptCreator = new MenuPromptCreator(
 //            vaccinationCenter

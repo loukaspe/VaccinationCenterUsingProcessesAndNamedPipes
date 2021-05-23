@@ -3,13 +3,18 @@
 #ifndef VACCINATIONCENTERUSINGPROCESSESANDNAMEDPIPES_TRAVELMONITOR_H
 #define VACCINATIONCENTERUSINGPROCESSESANDNAMEDPIPES_TRAVELMONITOR_H
 
+static const int POLL_TIMEOUT = 180;
+
 #include <iostream>
 #include <cstring>
 #include <cstdlib>
 #include <cstdio>
 #include <cmath>
+#include <sys/wait.h>
+#include <poll.h>
 #include "PipeReader.h"
 #include "PipeWriter.h"
+#include "BloomFilterLinkedList.h"
 
 using namespace std;
 
@@ -24,6 +29,7 @@ private:
     char** pipeNamesForTravelMonitorRead;
     PipeReader** pipeReaders;
     PipeWriter** pipeWriters;
+    BloomFilterLinkedList* bloomFilters;
 
     void createPipeNamesForTravelMonitorRead();
     void createPipeNamesForTravelMonitorWrite();
@@ -36,6 +42,7 @@ private:
 public:
     TravelMonitor(int, int, int, char*);
     void createMonitorsAndPassThemData();
+    void getBloomFiltersFromMonitors();
 };
 
 

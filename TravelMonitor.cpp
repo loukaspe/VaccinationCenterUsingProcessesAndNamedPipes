@@ -1,4 +1,3 @@
-#include <sys/wait.h>
 #include "TravelMonitor.h"
 
 const char *TravelMonitor::FORK_ERROR = "ERROR: fork() failed to create a new process";
@@ -18,6 +17,7 @@ TravelMonitor::TravelMonitor(
     this->createPipeNamesForTravelMonitorRead();
     this->createPipeReaders();
     this->createPipeWriters();
+    this->bloomFilters = new BloomFilterLinkedList();
 }
 
 void TravelMonitor::createPipeNamesForTravelMonitorWrite() {
@@ -124,7 +124,6 @@ void TravelMonitor::createMonitorsAndPassThemData() {
     }
 
     this->passCountriesSubdirectoriesToMonitors();
-    while (wait(NULL) > 0);
 }
 
 /*
@@ -165,4 +164,61 @@ void TravelMonitor::passCountriesSubdirectoriesToMonitors() {
         numberOfMonitorWithSentCountries--;
         this->pipeWriters[i]->closePipe();
     }
+}
+
+void TravelMonitor::getBloomFiltersFromMonitors() {
+    // Initialize fdArray for named pipe reading with poll()
+    struct pollfd fdArray[numberOfMonitors];
+    int numberOfFds = numberOfMonitors;
+    int rc;
+    int numberOfTotalExpectedBloomFiltersFromAllMonitors = 0;
+    int numberOfBloomFiltersPerMonitor[numberOfMonitors];
+
+    // We open each pipe
+    for (int i = 0; i < numberOfMonitors; i++) {
+        this->pipeReaders[i]->openPipe();
+    }
+
+    // Read expected bloomFilterPerMonitor and count total bloomFilters
+    for (int i = 0; i < numberOfMonitors; i++) {
+        numberOfBloomFiltersPerMonitor[i] = this->pipeReaders[i]->readNumberWithBlock();
+        numberOfTotalExpectedBloomFiltersFromAllMonitors += numberOfBloomFiltersPerMonitor[i];
+    }
+
+    for (int i = 0; i < numberOfFds; i++) {
+        fdArray[i].fd = pipeReaders[i]->getFd();
+        fdArray[i].events = POLLIN;
+    }
+
+    while (this->bloomFilters->getSize() != numberOfTotalExpectedBloomFiltersFromAllMonitors) {
+        rc = poll(fdArray, numberOfFds, POLL_TIMEOUT);
+
+        if (rc == 0) {
+            Helper::handleError("ERROR: poll() timeout.");
+        }
+        else if (rc < 1) {
+            Helper::handleError("ERROR: Unknown poll() error.");
+        }
+        else if (rc == 1) {
+            for (int i = 0; i < numberOfFds; i++) {
+                if (
+                    fdArray[i].fd == this->pipeReaders[i]->getFd()
+                    && fdArray[i].revents == POLLIN
+                ) {
+                    for (int j = 0; j < numberOfBloomFiltersPerMonitor[i]; j++) {
+                        bloomFilters->addAtStart(
+                            this->pipeReaders[i]->readBloomFilterInChunksWithBlock()
+                        );
+                    }
+                }
+            }
+        }
+    }
+
+    for (int i = 0; i < numberOfMonitors; i++) {
+        pipeReaders[i]->closePipe();
+    }
+
+    // Wait for all child processes to end
+    while (wait(NULL) > 0);
 }

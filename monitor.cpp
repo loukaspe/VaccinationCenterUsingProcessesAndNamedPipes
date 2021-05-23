@@ -108,7 +108,25 @@ int main(int argc, char **argv) {
         }
     }
 
+    // Every Virus in the Monitor has one BloomFilter. So the Monitor will send
+    // to the TravelMonitor numberOfViruses BloomFilters.
+    int numberOfViruses = viruses->getSize();
+    int numberOfBloomFiltersSent = numberOfViruses;
 
+    pipeWriter->openPipe();
+
+    // Send through pipes the number of expected bloom filters
+    pipeWriter->writeNumber(numberOfBloomFiltersSent);
+
+    VirusLinkedListNode *current = viruses->getHead();
+    while(current != NULL) {
+        // Send through pipes the bloom filters of the Monitor
+        BloomFilter* temp = current->getVirus()->getVaccinatedPeopleBloomFilter();
+        pipeWriter->writeBloomFilterInChunks(temp);
+        current = current->next;
+    }
+
+    pipeWriter->closePipe();
 
     return 0;
 }
