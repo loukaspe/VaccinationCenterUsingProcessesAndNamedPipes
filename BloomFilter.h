@@ -16,6 +16,10 @@ public:
     explicit BloomFilter(int = 819200);
     void add(char*);
     bool check(char*);
+    char *getVirusName() const;
+    void setVirusName(char *virusName);
+    char *getCountryName() const;
+    void setCountryName(char *countryName);
 private:
     const static int NUMBER_OF_HASH_FUNCTIONS;
     int size;
@@ -23,6 +27,8 @@ private:
     unsigned long firstHashFunction(char*);
     unsigned long secondHashFunction(char*);
     unsigned long* getHashDigests(char*);
+    char* virusName;
+    char* countryName;
 };
 
 #endif //UNTITLED_BLOOMFILTER_H

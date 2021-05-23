@@ -91,3 +91,19 @@ bool BloomFilter::check(char* key) {
 
     return true;
 }
+
+char *BloomFilter::getVirusName() const {
+    return virusName;
+}
+
+void BloomFilter::setVirusName(char *virusName) {
+    BloomFilter::virusName = virusName;
+}
+
+char *BloomFilter::getCountryName() const {
+    return countryName;
+}
+
+void BloomFilter::setCountryName(char *countryName) {
+    BloomFilter::countryName = countryName;
+}
