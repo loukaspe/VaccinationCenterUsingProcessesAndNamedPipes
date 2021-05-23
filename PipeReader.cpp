@@ -99,3 +99,36 @@ void PipeReader::openPipe() {
 void PipeReader::closePipe() {
     close(this->fd);
 }
+
+BloomFilter *PipeReader::readBloomFilterInChunksWithBlock() {
+    int bloomFilterSize = sizeof(BloomFilter);
+
+    BloomFilter* bloomFilter = (BloomFilter*) malloc(bloomFilterSize);
+    if (bloomFilter == NULL) {
+        Helper::handleError(MALLOC_FAIL_ERROR_MESSAGE);
+    }
+
+    if(bloomFilterSize < this->bufferSize) {
+        if (::read(this->fd, bloomFilter, bloomFilterSize) < 0) {
+            handlePipeError(READING_ERROR);
+        }
+
+        return bloomFilter;
+    }
+
+    char rawBytes[this->bufferSize];
+    int readBytes = 0;
+    int chunk;
+
+    while(readBytes < bloomFilterSize) {
+        chunk = ::read(this->fd, rawBytes, this->bufferSize);
+        if (chunk < 0) {
+            handlePipeError(READING_ERROR);
+        }
+
+        memcpy(bloomFilter + readBytes, rawBytes, chunk);
+        readBytes += chunk;
+    }
+
+    return bloomFilter;
+}

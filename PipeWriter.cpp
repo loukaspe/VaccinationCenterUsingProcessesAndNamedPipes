@@ -87,3 +87,32 @@ void PipeWriter::openPipe() {
 void PipeWriter::closePipe() {
     close(this->fd);
 }
+
+void PipeWriter::writeBloomFilterInChunks(BloomFilter *bloomFilter) {
+    int totalBytes = sizeof(BloomFilter);
+
+    int writtenBytes = 0;
+    int chunk;
+
+    if(totalBytes < this->bufferSize) {
+        if (::write(this->fd, bloomFilter, totalBytes) < 0) {
+            handlePipeError(WRITING_ERROR);
+        }
+
+        return;
+    }
+
+    while(writtenBytes < totalBytes) {
+        chunk = ::write(this->fd, bloomFilter, this->bufferSize);
+        if (chunk < 0) {
+            handlePipeError(WRITING_ERROR);
+        }
+
+        // TODO: Maybe DANGERRRRRR
+        // We move the string pointer chunk chars ahead to continue the writing
+        // from the point is was stopped
+        bloomFilter += chunk;
+
+        writtenBytes += chunk;
+    }
+}

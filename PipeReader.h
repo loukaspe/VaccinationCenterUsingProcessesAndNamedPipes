@@ -11,6 +11,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include "Helper.h"
+#include "BloomFilter.h"
 
 #ifndef VACCINATIONCENTERUSINGPROCESSESANDNAMEDPIPES_PIPEREADER_H
 #define VACCINATIONCENTERUSINGPROCESSESANDNAMEDPIPES_PIPEREADER_H
@@ -20,6 +21,7 @@ public:
     PipeReader(int, const char*, int = sizeof(int));
     ~PipeReader();
     char* readStringInChunksWithBlock(int);
+    BloomFilter* readBloomFilterInChunksWithBlock();
     int readNumberWithBlock();
     void setBufferSize(int);
     void openPipe();

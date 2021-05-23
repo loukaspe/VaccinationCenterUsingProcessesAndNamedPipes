@@ -12,6 +12,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include "Helper.h"
+#include "BloomFilter.h"
 
 #ifndef VACCINATIONCENTERUSINGPROCESSESANDNAMEDPIPES_PIPEWRITER_H
 #define VACCINATIONCENTERUSINGPROCESSESANDNAMEDPIPES_PIPEWRITER_H
@@ -22,6 +23,7 @@ public:
     ~PipeWriter();
     void writeNumber(int);
     void writeStringInChunks(char*);
+    void writeBloomFilterInChunks(BloomFilter*);
     void setBufferSize(int);
     void openPipe();
     void closePipe();
