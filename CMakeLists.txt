@@ -28,9 +28,11 @@ add_executable(
         VaccinationCenter.cpp VaccinationCenter.h
         Country.cpp Country.h CountryLinkedList.cpp CountryLinkedList.h CountryLinkedListNode.cpp CountryLinkedListNode.h
         Monitor.cpp Monitor.h
+        BloomFilterLinkedListNode.cpp BloomFilterLinkedListNode.h BloomFilterLinkedList.cpp BloomFilterLinkedList.h
 )
 
-add_executable(travelMonitor
+add_executable(
+        travelMonitor
         main.cpp
         BitArray.cpp BitArray.h
         BloomFilter.cpp BloomFilter.h
@@ -54,4 +56,5 @@ add_executable(travelMonitor
         TravelMonitor.cpp TravelMonitor.h
         PipeReader.cpp PipeReader.h
         PipeWriter.cpp PipeWriter.h
-        )
+        BloomFilterLinkedListNode.cpp BloomFilterLinkedListNode.h BloomFilterLinkedList.cpp BloomFilterLinkedList.h
+)
