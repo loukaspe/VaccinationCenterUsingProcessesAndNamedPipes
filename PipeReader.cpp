@@ -74,7 +74,6 @@ char *PipeReader::readStringInChunksWithBlock(int totalBytes) {
 
         strncat(string, rawBytes, chunk);
         readBytes += chunk;
-        totalBytes -= chunk;
     }
 
     return string;
