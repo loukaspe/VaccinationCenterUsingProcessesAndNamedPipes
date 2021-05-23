@@ -49,3 +49,7 @@ void VirusLinkedList::checkIfVaccinatedForAllViruses(char *citizenId) {
 int VirusLinkedList::getSize() const {
     return size;
 }
+
+VirusLinkedListNode *VirusLinkedList::getHead() const {
+    return head;
+}

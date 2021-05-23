@@ -13,6 +13,7 @@ public:
     VirusLinkedListNode *findByName(char *);
     void checkIfVaccinatedForAllViruses(char*);
     int getSize() const;
+    VirusLinkedListNode *getHead() const;
 private:
     void traverseAndCheckIfVaccinated(VirusLinkedListNode *, char *);
     VirusLinkedListNode *head;
