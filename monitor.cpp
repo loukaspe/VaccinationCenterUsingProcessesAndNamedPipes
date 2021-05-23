@@ -73,6 +73,7 @@ int main(int argc, char **argv) {
     int directoryCharacterSize = strlen(directoryCharacter);
 
     for(int i = 0; i < expectedCountryNames; i++) {
+        // We build the path for reading the files with the records
         int countryNameSize = strlen(countriesSubdirectories[i]);
         char *path = (char*) malloc(
             inputDirectorySize + countryNameSize + directoryCharacterSize + 1
@@ -85,9 +86,25 @@ int main(int argc, char **argv) {
         int numberOfFiles = Helper::getAllFilesNumber(path);
         char** countriesFile = Helper::getAllFilesNames(path);
 
+        delete path;
         for(int j = 0; j < numberOfFiles; j++) {
-//            cout << countriesFile[j] << endl;
-            fileReader->readAndUpdateStructures(countriesFile[j]);
+            // We build the path for each records' file
+            int inputFileSize = strlen(countriesFile[j]);
+            path = (char*) malloc(
+                    inputDirectorySize
+                    + countryNameSize
+                    + 2 * directoryCharacterSize
+                    + inputFileSize
+                    + 1
+            );
+            strcpy(path, inputDirectory);
+            strcat(path, directoryCharacter);
+            strcat(path, countriesSubdirectories[i]);
+            strcat(path, directoryCharacter);
+            strcat(path, countriesFile[j]);
+//            cout << path << endl;
+            fileReader->readAndUpdateStructures(path);
+            delete path;
         }
     }
 
