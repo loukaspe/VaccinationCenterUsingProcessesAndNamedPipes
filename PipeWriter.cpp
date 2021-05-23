@@ -56,7 +56,6 @@ void PipeWriter::writeStringInChunks(char* string) {
             handlePipeError(WRITING_ERROR);
         }
 
-        // TODO: Maybe DANGERRRRRR
         // We move the string pointer chunk chars ahead to continue the writing
         // from the point is was stopped
         string += chunk;
@@ -108,7 +107,6 @@ void PipeWriter::writeBloomFilterInChunks(BloomFilter *bloomFilter) {
             handlePipeError(WRITING_ERROR);
         }
 
-        // TODO: Maybe DANGERRRRRR
         // We move the string pointer chunk chars ahead to continue the writing
         // from the point is was stopped
         bloomFilter += chunk;

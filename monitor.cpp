@@ -9,9 +9,6 @@ int main(int argc, char **argv) {
     char* pipeNameForWriting = argv[2];
     int fd;
 
-//    cout << "--" << pipeNameForReading << endl;
-//    cout << "--" << pipeNameForWriting << endl;
-
     PipeWriter* pipeWriter = new PipeWriter(
         fd,
         pipeNameForWriting
@@ -30,20 +27,14 @@ int main(int argc, char **argv) {
     int inputDirectorySize = pipeReader->readNumberWithBlock();
     char* inputDirectory = pipeReader->readStringInChunksWithBlock(inputDirectorySize);
 
-//    cout << "--" << inputDirectory << endl;
-
-//    cout << "oo " << bufferSize << endl;
-
     int expectedCountryNames = pipeReader->readNumberWithBlock();
     char** countriesSubdirectories = (char**) malloc(
             expectedCountryNames * sizeof(char*)
     );
-//    cout << "ee " << expectedCountryNames << endl;
+
     for(int i = 0; i < expectedCountryNames; i++) {
         int countryNameLength = pipeReader->readNumberWithBlock();
-//        cout << "aa " << countryNameLength << endl;
         countriesSubdirectories[i] = pipeReader->readStringInChunksWithBlock(countryNameLength);
-//        printf("read %s\n", countriesSubdirectories[i]);
     }
     pipeReader->closePipe();
 
@@ -81,7 +72,6 @@ int main(int argc, char **argv) {
         strcpy(path, inputDirectory);
         strcat(path, directoryCharacter);
         strcat(path, countriesSubdirectories[i]);
-//        cout << path << endl;
 
         int numberOfFiles = Helper::getAllFilesNumber(path);
         char** countriesFile = Helper::getAllFilesNames(path);
@@ -102,7 +92,7 @@ int main(int argc, char **argv) {
             strcat(path, countriesSubdirectories[i]);
             strcat(path, directoryCharacter);
             strcat(path, countriesFile[j]);
-//            cout << path << endl;
+
             fileReader->readAndUpdateStructures(path);
             delete path;
         }
