@@ -26,8 +26,11 @@ public:
     void setBufferSize(int);
     void openPipe();
     void closePipe();
+    int getFd() const;
 private:
     int fd;
+
+private:
     int bufferSize;
     const char* filename;
     static const int FIFO_MODE;

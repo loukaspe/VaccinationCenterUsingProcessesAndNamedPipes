@@ -10,11 +10,9 @@
 class BloomFilterLinkedList {
 public:
     BloomFilterLinkedList();
-
     void addAtStart(BloomFilter *);
-
     BloomFilterLinkedListNode *findByVirusAndCountry(char *, char *);
-
+    int getSize() const;
 private:
     BloomFilterLinkedListNode *head;
     int size;

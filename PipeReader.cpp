@@ -132,3 +132,7 @@ BloomFilter *PipeReader::readBloomFilterInChunksWithBlock() {
 
     return bloomFilter;
 }
+
+int PipeReader::getFd() const {
+    return fd;
+}

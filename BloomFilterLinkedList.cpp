@@ -6,8 +6,8 @@ BloomFilterLinkedList::BloomFilterLinkedList() {
 }
 
 
-void BloomFilterLinkedList::addAtStart(BloomFilter *virus) {
-    BloomFilterLinkedListNode *newNode = new BloomFilterLinkedListNode(virus);
+void BloomFilterLinkedList::addAtStart(BloomFilter *bloomFilter) {
+    BloomFilterLinkedListNode *newNode = new BloomFilterLinkedListNode(bloomFilter);
 
     newNode->next = this->head;
     this->head = newNode;
@@ -31,4 +31,8 @@ BloomFilterLinkedListNode *BloomFilterLinkedList::findByVirusAndCountry(
     }
 
     return NULL;
+}
+
+int BloomFilterLinkedList::getSize() const {
+    return size;
 }
