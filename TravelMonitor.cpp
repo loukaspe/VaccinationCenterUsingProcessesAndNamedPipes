@@ -124,7 +124,7 @@ void TravelMonitor::createMonitorsAndPassThemData() {
     }
 
     this->passCountriesSubdirectoriesToMonitors();
-    while(wait(NULL) > 0);
+    while (wait(NULL) > 0);
 }
 
 /*
@@ -133,36 +133,36 @@ void TravelMonitor::createMonitorsAndPassThemData() {
  * 1. the number of expected names, 2. foreach name: it's number of bytes and the
  * actual string
  */
-    void TravelMonitor::passCountriesSubdirectoriesToMonitors() {
-        char **countrySubdirectories = Helper::getAllSubdirectoriesNames(this->inputDirectory);
-        int numberOfCountrySubdirectories = Helper::getAllSubdirectoriesNumber(this->inputDirectory);
-        int remainingNumberOfCountrySubdirectories = numberOfCountrySubdirectories;
-        int divisionRemainder;
-        int subdirectoryNameLength;
-        int numberOfCountriesPassedToMonitor;
-        int numberOfMonitorWithSentCountries = numberOfMonitors;
+void TravelMonitor::passCountriesSubdirectoriesToMonitors() {
+    char **countrySubdirectories = Helper::getAllSubdirectoriesNames(this->inputDirectory);
+    int numberOfCountrySubdirectories = Helper::getAllSubdirectoriesNumber(this->inputDirectory);
+    int remainingNumberOfCountrySubdirectories = numberOfCountrySubdirectories;
+    int divisionRemainder;
+    int subdirectoryNameLength;
+    int numberOfCountriesPassedToMonitor;
+    int numberOfMonitorWithSentCountries = numberOfMonitors;
 
-        for (int i = 0; i < numberOfMonitors; i++) {
-            numberOfCountriesPassedToMonitor = Helper::getCeilingOfDividedInts(
+    for (int i = 0; i < numberOfMonitors; i++) {
+        numberOfCountriesPassedToMonitor = Helper::getCeilingOfDividedInts(
                 remainingNumberOfCountrySubdirectories,
                 numberOfMonitorWithSentCountries
-            );
+        );
 
-            this->pipeWriters[i]->writeNumber(numberOfCountriesPassedToMonitor);
+        this->pipeWriters[i]->writeNumber(numberOfCountriesPassedToMonitor);
 
-            for(int j = numberOfCountrySubdirectories - 1; j >= 0; j--) {
-                divisionRemainder = j % numberOfMonitors;
+        for (int j = numberOfCountrySubdirectories - 1; j >= 0; j--) {
+            divisionRemainder = j % numberOfMonitors;
 
-                if(divisionRemainder == i) {
-                    subdirectoryNameLength = strlen(countrySubdirectories[j]);
-                    this->pipeWriters[i]->writeNumber(subdirectoryNameLength);
+            if (divisionRemainder == i) {
+                subdirectoryNameLength = strlen(countrySubdirectories[j]);
+                this->pipeWriters[i]->writeNumber(subdirectoryNameLength);
 
-                    this->pipeWriters[i]->writeStringInChunks(countrySubdirectories[j]);
-                }
+                this->pipeWriters[i]->writeStringInChunks(countrySubdirectories[j]);
             }
-
-            remainingNumberOfCountrySubdirectories -= numberOfCountriesPassedToMonitor;
-            numberOfMonitorWithSentCountries--;
-            this->pipeWriters[i]->closePipe();
         }
+
+        remainingNumberOfCountrySubdirectories -= numberOfCountriesPassedToMonitor;
+        numberOfMonitorWithSentCountries--;
+        this->pipeWriters[i]->closePipe();
     }
+}

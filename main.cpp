@@ -1,5 +1,3 @@
-#include "CitizenRecordsFileReader.h"
-#include "MenuPromptCreator.h"
 #include "TravelMonitor.h"
 #include <getopt.h>
 
@@ -42,23 +40,7 @@ int main(int argc, char *argv[]) {
     );
 
     travelMonitor->createMonitorsAndPassThemData();
-//    PersonLinkedList *people = new PersonLinkedList();
-//    VirusLinkedList *viruses = new VirusLinkedList();
-//    CountryLinkedList *countries = new CountryLinkedList();
-//
-//    VaccinationCenter *vaccinationCenter = new VaccinationCenter(
-//            people,
-//            viruses,
-//            countries
-//    );
-//
-//    CitizenRecordsFileReader *fileReader = new CitizenRecordsFileReader(
-//            citizenRecordsFile,
-//            vaccinationCenter
-//    );
-//
-//    fileReader->readAndUpdateStructures();
-//
+
 //    MenuPromptCreator *menuPromptCreator = new MenuPromptCreator(
 //            vaccinationCenter
 //    );
