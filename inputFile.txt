@@ -1,0 +1,32 @@
+1706 WGcBHixwV izLTkt Brazil 71 Plague NO
+5394 mrSKjZ qMMxOUPJ Germany 114 Plague NO
+2413 KpcLCAIlzg UpRH Albania 40 Plague NO
+8533 FSAxzlSMYD jxVigKgbPl Peru 21 Plague YES 22-12-2000
+6515 dZu WJXFi China 72 Ebola NO
+6515 dZu WJXFi China 72 Ebola YES 15-12-2009
+98 kUnVdM gyrOgijFxnv Sweden 102 Ebola YES 15-11-1919
+98 kUnVdM gyrOgijFxnv Sweden 102 Ebola NO
+9529 waop GXwwVTEO Malta 24 Ebola YES 27-08-1997
+527 mJOMPxBLI AbvSjZGbcX Italy 98 Ebola NO
+3764 AyaBBAUmP GUzNoke Japan 51 Rabies NO
+5473 fVTBriB czd Netherlands 95 Rabies YES 05-02-1926
+7320 jmfdgGVsuu tqof Brazil 2 Rabies NO
+9194 CMDVOKgT WWzoXrHRik India 78 Rabies YES 12-09-1943
+7804 rxhPb HJpASlvmd Russia 74 Cholera YES 30-04-1947
+6325 WpN gEMVXo Russia 35 Cholera NO
+4602 LxDzkJMFs NWLbzWnjkKn Argentina 110 Cholera NO
+6051 iENaP yheUJBEtCs Brazil 19 Cholera NO
+6254 mNwyU Jzl Russia 51 HepatitisA NO
+8372 TqfHgzd uLsAuCdhjS Russia 6 HepatitisA YES 14-10-2015
+4333 enyxm GsadyqrJr Russia 8 HepatitisA NO
+2400 CNZi qyo Argentina 38 HepatitisA YES 25-05-1983
+1 Test AllVaccinated Argentina 38 Plague YES 25-05-1983
+1 Test AllVaccinated Argentina 38 HepatitisA YES 25-05-1983
+1 Test AllVaccinated Argentina 38 Cholera YES 25-05-1983
+1 Test AllVaccinated Argentina 38 Rabies YES 25-05-1983
+1 Test AllVaccinated Argentina 38 Ebola YES 25-05-1983
+2 Test AllNOT Argentina 38 Plague NO
+2 Test AllNOT Argentina 38 HepatitisA NO
+2 Test AllNOT Argentina 38 Rabies NO
+2 Test AllNOT Argentina 38 Cholera NO
+2 Test AllNOT Argentina 38 Ebola NO
