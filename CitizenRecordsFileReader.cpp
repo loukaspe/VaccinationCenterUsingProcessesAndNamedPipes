@@ -14,7 +14,7 @@ CitizenRecordsFileReader::CitizenRecordsFileReader(
 // 889 John Papadopoulos Greece 52 Η1Ν1 ΝΟ
 
 void CitizenRecordsFileReader::readAndUpdateStructures(char* filename) {
-    if (fileName == NULL) {
+    if (filename == NULL) {
         Helper::handleError(NO_INPUT_FILE_ERROR);
     }
 
@@ -32,7 +32,7 @@ void CitizenRecordsFileReader::readAndUpdateStructures(char* filename) {
     Date *date;
     Virus *tempVirus;
 
-    inputFile = fopen(fileName, OPEN_FILE_READ_MODE);
+    inputFile = fopen(filename, OPEN_FILE_READ_MODE);
     if (inputFile == NULL) {
         Helper::handleError(OPEN_FILE_ERROR);
     }
