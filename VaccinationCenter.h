@@ -69,7 +69,7 @@ public:
 
     void checkAndAddCountry(char *);
 
-    void checkAndAddVirus(char *);
+    void checkAndAddVirus(char *, char*);
 
     PersonLinkedList *getPeople() const;
 

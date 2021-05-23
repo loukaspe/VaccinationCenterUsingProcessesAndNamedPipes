@@ -72,7 +72,7 @@ void CitizenRecordsFileReader::readAndUpdateStructures(char* filename) {
                 age
         );
 
-        this->vaccinationCenter->checkAndAddVirus(virusName);
+        this->vaccinationCenter->checkAndAddVirus(virusName, country);
 
         tempVirus = this->vaccinationCenter->getViruses()->findByName(virusName)->getVirus();
 

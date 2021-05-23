@@ -20,5 +20,11 @@ Important Disclaimers:
     a. We pass the number of subdirectories' names that are going to be passed
     b. foreach subdirectory's name we pass firstly it's size, then the name itself
 
+5. For quickly combining the Project1's design with this one I add to BF the Virus
+    and Country that concern it. So that the TravelMonitor has a LinkedList of BF
+    and finds the appropriate one by the Virus and Country. This was the fastest way
+    as I did not want to lose much time adjusting the Project1 code and I wanted to
+    concentrate to Pipes and Signals.
+
 TODO:
 1. in dtor delete all pointers

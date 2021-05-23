@@ -127,7 +127,7 @@ void VaccinationCenter::insertVaccinated(
             country,
             age
     );
-    this->checkAndAddVirus(virusName);
+    this->checkAndAddVirus(virusName, country);
 
     VirusLinkedListNode *virusNode = this->viruses->findByName(virusName);
     Virus *virus = virusNode->getVirus();
@@ -167,7 +167,7 @@ void VaccinationCenter::insertNotVaccinated(
             country,
             age
     );
-    this->checkAndAddVirus(virusName);
+    this->checkAndAddVirus(virusName, country);
 
     VirusLinkedListNode *virusNode = this->viruses->findByName(virusName);
     Virus *virus = virusNode->getVirus();
@@ -264,9 +264,11 @@ void VaccinationCenter::checkAndAddPerson(
     }
 }
 
-void VaccinationCenter::checkAndAddVirus(char *virusName) {
+void VaccinationCenter::checkAndAddVirus(char *virusName, char *countryName) {
     if (this->viruses->findByName(virusName) == NULL) {
         BloomFilter *newBloomFilter = new BloomFilter();
+        newBloomFilter->setCountryName(countryName);
+        newBloomFilter->setVirusName(virusName);
         VaccinatedSkipList *newVaccinatedSkipList = new VaccinatedSkipList();
         NotVaccinatedSkipList *newNotVaccinatedSkipList = new NotVaccinatedSkipList();
 
