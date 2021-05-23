@@ -45,3 +45,7 @@ void VirusLinkedList::traverseAndCheckIfVaccinated(
 void VirusLinkedList::checkIfVaccinatedForAllViruses(char *citizenId) {
     this->traverseAndCheckIfVaccinated(this->head, citizenId);
 }
+
+int VirusLinkedList::getSize() const {
+    return size;
+}

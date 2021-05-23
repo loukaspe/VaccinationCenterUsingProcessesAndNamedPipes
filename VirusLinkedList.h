@@ -9,17 +9,12 @@
 class VirusLinkedList {
 public:
     VirusLinkedList();
-
     void addAtStart(Virus *);
-
     VirusLinkedListNode *findByName(char *);
-
     void checkIfVaccinatedForAllViruses(char*);
-
+    int getSize() const;
 private:
-
     void traverseAndCheckIfVaccinated(VirusLinkedListNode *, char *);
-
     VirusLinkedListNode *head;
     int size;
 };
